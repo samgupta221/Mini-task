@@ -1,0 +1,272 @@
+:root {
+  --paper: #f3f5f7;
+  --surface: #ffffff;
+  --ink: #1b2430;
+  --ink-soft: #5a6676;
+  --rule: #cbd3db;
+  --accent: #0f6e7a;
+  --accent-ink: #ffffff;
+  --todo: #5a6676;
+  --progress: #a86a12;
+  --done: #2b7a4b;
+  --danger-bg: #fdeeee;
+  --danger-ink: #8a1f1f;
+  --radius: 6px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+.page__header h1 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+.page__header p {
+  margin: 0.25rem 0 2rem;
+  color: var(--ink-soft);
+}
+
+/* Form */
+.task-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.task-form__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 260px;
+}
+
+.task-form__field--status {
+  flex: 0 0 150px;
+}
+
+.task-form label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+input[type="text"],
+select {
+  font: inherit;
+  color: inherit;
+  padding: 0.55rem 0.7rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+input[aria-invalid="true"] {
+  border-color: var(--danger-ink);
+}
+
+.field-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--danger-ink);
+}
+
+.task-form .button {
+  align-self: flex-end;
+}
+
+/* Buttons */
+.button {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.button--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.button--quiet {
+  padding: 0.3rem 0.6rem;
+  border-color: transparent;
+  background: transparent;
+  color: var(--ink-soft);
+  font-weight: 500;
+}
+
+.button--quiet:hover:not(:disabled) {
+  color: var(--danger-ink);
+  text-decoration: underline;
+}
+
+.button:disabled,
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Feedback */
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--radius);
+}
+
+.banner--error {
+  background: var(--danger-bg);
+  color: var(--danger-ink);
+}
+
+.state-message {
+  padding: 2rem 0;
+  color: var(--ink-soft);
+}
+
+/* Lanes */
+.lanes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lane {
+  padding: 0 1.25rem;
+  border-left: 1px solid var(--rule);
+}
+
+.lane:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.lane:last-child {
+  padding-right: 0;
+}
+
+.lane__heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  font-size: 1.05rem;
+  border-bottom: 3px solid var(--todo);
+}
+
+.lane[data-status="in-progress"] .lane__heading {
+  border-color: var(--progress);
+}
+
+.lane[data-status="done"] .lane__heading {
+  border-color: var(--done);
+}
+
+.lane__count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.lane__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lane__empty {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+/* Task */
+.task {
+  padding: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+
+.task[data-busy="true"] {
+  opacity: 0.7;
+}
+
+.task__title {
+  margin: 0 0 0.6rem;
+  overflow-wrap: anywhere;
+}
+
+.lane[data-status="done"] .task__title {
+  color: var(--ink-soft);
+  text-decoration: line-through;
+}
+
+.task__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.task__actions select {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .lanes {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .lane,
+  .lane:first-child,
+  .lane:last-child {
+    padding: 0;
+    border-left: 0;
+  }
+}
