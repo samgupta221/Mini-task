@@ -1,92 +1,237 @@
 # Mini Task Board
 
-A small full-stack task board. You can add tasks, move them between **To do**, **In progress** and **Done**, and delete them.
+A simple and responsive task management application built with Next.js, React, TypeScript, and MySQL. It allows users to create tasks, organize them by status, track progress, and delete tasks through a clean, Kanban-style interface.
 
-**Stack:** Next.js 14 (App Router) · TypeScript · React · MySQL (`mysql2`)
+## Project Preview
 
-## Run it locally
+The Mini Task Board provides three task columns:
 
-You need Node.js 18+ and a running MySQL (or MariaDB) server.
+- **To do** — Tasks waiting to be started.
+- **In progress** — Tasks currently being worked on.
+- **Done** — Tasks that have been completed.
+
+Users can add new tasks, select their initial status, update task statuses, and delete tasks as needed.
+
+## Features
+
+- **Create Tasks:** Add tasks with a simple input form.
+- **Task Status Management:** Move tasks between To do, In progress, and Done.
+- **Delete Tasks:** Remove tasks that are no longer needed.
+- **MySQL Database:** Persist tasks in a relational database.
+- **REST API:** Manage tasks through API endpoints.
+- **Input Validation:** Prevent empty task titles and titles longer than 200 characters.
+- **Optimistic UI Updates:** Update task status immediately while the server request completes.
+- **Error Handling:** Display feedback for failed operations and allow users to retry loading tasks.
+- **Responsive Interface:** Clean layout designed for convenient task management.
+- **TypeScript:** Improve code reliability with type-safe components and API requests.
+
+## Tech Stack
+
+| Technology | Purpose |
+|---|---|
+| Next.js 14 | Full-stack React framework |
+| React 18 | User interface |
+| TypeScript | Type safety |
+| MySQL | Relational database |
+| mysql2 | MySQL database connectivity |
+| CSS | Styling and responsive layout |
+| REST API | Task creation and management |
+| Node.js | JavaScript runtime |
+
+## Getting Started
+
+Follow these instructions to run the project locally.
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js 18 or later
+- npm
+- MySQL or MariaDB
+- A code editor such as Visual Studio Code
+
+### 1. Clone the Repository
 
 ```bash
-# 1. Install dependencies
+git clone YOUR_GITHUB_REPOSITORY_URL
+```
+
+Navigate to the project directory:
+
+```bash
+cd Task
+```
+
+Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL.
+
+### 2. Install Dependencies
+
+```bash
 npm install
+```
 
-# 2. Configure the database connection
-cp .env.example .env.local
-#    then edit .env.local with your MySQL user and password
+### 3. Configure the Database
 
-# 3. Create the database, the tasks table, and sample rows
+Create a MySQL database named `task_board` if it does not already exist.
+
+Create a `.env.local` file in the project root and configure your database credentials:
+
+```env
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=task_board
+```
+
+Replace `your_mysql_password` with your actual MySQL password.
+
+**Important:** Keep your `.env.local` file private. Never commit database credentials or other secrets to GitHub.
+
+### 4. Initialize the Database
+
+To create the required database tables without sample tasks, run:
+
+```bash
+npm run db:migrate
+```
+
+To initialize the database and insert sample tasks when the table is empty, run:
+
+```bash
 npm run db:seed
+```
 
-# 4. Start the app
+### 5. Start the Development Server
+
+```bash
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open the application in your browser:
 
-Other commands:
+http://localhost:3000
 
-| Command | What it does |
-| --- | --- |
-| `npm run db:migrate` | Creates the database and table only (no sample data) |
-| `npm run db:seed` | Same as above, plus sample tasks if the table is empty |
-| `npm run typecheck` | Runs the TypeScript compiler without emitting files |
-| `npm run build && npm start` | Production build and server |
+## Available Scripts
 
-If you prefer plain SQL, `db/schema.sql` and `db/seed.sql` can be run directly in any MySQL client.
+| Command | Description |
+|---|---|
+| `npm run dev` | Starts the development server |
+| `npm run build` | Creates a production build |
+| `npm start` | Runs the production server |
+| `npm run typecheck` | Checks TypeScript types |
+| `npm run db:migrate` | Creates the database schema |
+| `npm run db:seed` | Initializes the schema and sample tasks |
 
-## Backend choice: Next.js API routes
+## API Endpoints
 
-I used Next.js route handlers instead of a separate Express server. For an app this small, one project means one install, one dev command, and one deployment. The API and the UI also import the same TypeScript types directly, so there is no duplicate type package to keep in sync. If the API ever needs to serve other clients or scale separately, `src/lib/tasks-repo.ts` has no Next.js code in it and could move into an Express app unchanged.
+The application uses Next.js Route Handlers to provide API functionality.
 
-## Project layout
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/tasks` | Fetch all tasks |
+| POST | `/api/tasks` | Create a new task |
+| PATCH | `/api/tasks/:id` | Update a task's status |
+| DELETE | `/api/tasks/:id` | Delete a task |
 
-```
-db/
-  schema.sql            tasks table
-  seed.sql              sample rows
-scripts/
-  migrate.mjs           applies schema.sql (and seed.sql with --seed)
-src/
-  app/
-    api/tasks/          GET list, POST create
-    api/tasks/[id]/     PATCH status, DELETE
-    page.tsx            the single page
-  components/           TaskBoard, TaskForm, TaskItem
-  lib/
-    db.ts               MySQL connection pool
-    tasks-repo.ts       all SQL lives here
-    validation.ts       request parsing for the API
-    task-rules.ts       pure rules (title, status) shared with the UI
-    api-client.ts       typed fetch helpers used by the UI
-    errors.ts           HttpError and error-to-response helper
-  types/task.ts         types shared by API and UI
+### Create a Task
+
+**Endpoint:** `POST /api/tasks`
+
+Example request body:
+
+```json
+{
+  "title": "Complete project documentation",
+  "status": "todo"
+}
 ```
 
-## API
+Supported task statuses:
 
-| Method | Path | Body | Success |
-| --- | --- | --- | --- |
-| GET | `/api/tasks` | – | `200` list of tasks |
-| POST | `/api/tasks` | `{ "title": string, "status"?: Status }` | `201` created task |
-| PATCH | `/api/tasks/:id` | `{ "status": Status }` | `200` updated task |
-| DELETE | `/api/tasks/:id` | – | `204` |
+- `todo`
+- `in-progress`
+- `done`
 
-`Status` is `"todo" | "in-progress" | "done"`. Errors come back as `{ "error": "message" }` with `400` (bad input), `404` (unknown id) or `500` (unexpected; details are only logged on the server).
+### Update Task Status
 
-## Notes on the implementation
+**Endpoint:** `PATCH /api/tasks/:id`
 
-- **SQL safety:** every query uses `?` placeholders through `pool.execute`. User input is never joined into a SQL string.
-- **Validation:** titles are trimmed, must not be empty, and are limited to 200 characters. The same rule runs in the form (for instant feedback) and in the API (the real check).
-- **Shared types:** `src/types/task.ts` is used by the route handlers, the repository, the API client and the components. Request bodies arrive as `unknown` and are narrowed in `validation.ts`, so there is no `any` in the codebase.
-- **UI states:** the board shows a loading state, a load error with a retry button, an empty state, and a dismissible banner for failed actions.
-- **Optimistic updates:** changing a status updates the UI immediately and rolls back with an error message if the request fails. New tasks and deletes wait for the server.
-- **Accessibility:** form fields have labels, errors use `role="alert"`, and every status select has a hidden label naming its task.
+Example request body:
 
-## What I would add with more time
+```json
+{
+  "status": "done"
+}
+```
 
-- Automated tests for `validation.ts` and the API routes
-- Moving tasks by drag and drop
-- Editing a task's title
-- A proper migrations tool once there is more than one table
+### Delete a Task
+
+**Endpoint:** `DELETE /api/tasks/:id`
+
+The task is removed from the database when the request succeeds.
+
+## Project Structure
+
+```text
+Task/
+├── db/
+│   ├── schema.sql
+│   └── seed.sql
+├── scripts/
+│   └── migrate.mjs
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   │   └── tasks/
+│   │   │       ├── route.ts
+│   │   │       └── [id]/
+│   │   │           └── route.ts
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components/
+│   │   ├── TaskBoard.tsx
+│   │   ├── TaskForm.tsx
+│   │   └── TaskItem.tsx
+│   ├── lib/
+│   │   ├── api-client.ts
+│   │   ├── db.ts
+│   │   ├── errors.ts
+│   │   ├── task-rules.ts
+│   │   ├── tasks-repo.ts
+│   │   └── validation.ts
+│   └── types/
+│       └── task.ts
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+└── README.md
+```
+
+## How It Works
+
+1. The user enters a task title and selects its starting status.
+2. The frontend validates the task title.
+3. The application sends a request to the Next.js API.
+4. The backend validates the incoming data and interacts with MySQL.
+5. The task board displays tasks under their respective statuses.
+6. Users can change a task's status or delete it.
+7. The interface handles loading states and displays errors when an operation fails.
+
+## Validation and Error Handling
+
+The application includes validation and error-handling mechanisms to improve reliability.
+
+- Task titles cannot be empty.
+- Leading and trailing whitespace is removed from task titles.
+- Task titles are limited to 200 characters.
+- Only supported task statuses are accepted.
+- Invalid requests return a `400` response.
+- Requests for nonexistent task IDs return a `404` response.
+- Unexpected server errors return a `500` response.
+
+Database queries use parameterized statements to help prevent SQL injection.
+
+
