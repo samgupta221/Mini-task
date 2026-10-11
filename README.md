@@ -42,15 +42,6 @@ Users can add new tasks, select their initial status, update task statuses, and 
 
 Follow these instructions to run the project locally.
 
-### Prerequisites
-
-Make sure you have the following installed:
-
-- Node.js 18 or later
-- npm
-- MySQL or MariaDB
-- A code editor such as Visual Studio Code
-
 ### 1. Clone the Repository
 
 ```bash
