@@ -66,43 +66,6 @@ The application uses Next.js Route Handlers to manage task operations.
 | PATCH | `/api/tasks/:id` | Update task status |
 | DELETE | `/api/tasks/:id` | Delete a task |
 
-### Create a Task
-
-**POST** `/api/tasks`
-
-Request Body:
-
-```json
-{
-  "title": "Complete project documentation",
-  "status": "todo"
-}
-```
-
-### Update Task Status
-
-**PATCH** `/api/tasks/:id`
-
-Request Body:
-
-```json
-{
-  "status": "done"
-}
-```
-
-### Delete a Task
-
-**DELETE** `/api/tasks/:id`
-
-Deletes the specified task from the database.
-
-### Supported Task Statuses
-
-- `todo`
-- `in-progress`
-- `done`
-
 ## Project Structure
 
 ```text
